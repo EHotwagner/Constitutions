@@ -1,28 +1,29 @@
 <!--
 Sync Impact Report
-- Version change: (template) → 1.0.0
+- Version change: 1.0.0 → 1.1.0
 - Modified principles:
-  - N/A (initial constitution from template)
+  - Principle VI: Comprehensive Documentation — replaced monolithic `/doc`
+    skill with five specialized documentation skills (`doc-setup`,
+    `api-doc`, `doc-examples`, `doc-technical`, `doc-build`). Updated
+    documentation workflow to use skill-per-concern model. Expanded scope
+    beyond API-only docs to include literate examples, technical docs,
+    and site setup/build.
+- Modified sections:
+  - Engineering Constraints — updated documentation tooling constraint to
+    reference the five doc skills instead of `/doc`.
+  - Workflow and Quality Gates — updated step 6 to reference the new
+    skill-per-concern documentation workflow.
 - Added sections:
-  - Principle I: Spec-First Delivery
-  - Principle II: Compiler-Enforced Structural Contracts
-  - Principle III: Test Evidence Is Mandatory
-  - Principle IV: Observability and Safe Failure Handling
-  - Principle V: Scripting Accessibility
-  - Principle VI: Comprehensive Documentation
-  - Engineering Constraints (F#/.NET stack, FSI contracts, NuGet local
-    packaging, scripting infrastructure, multi-language components)
-  - Workflow and Quality Gates
-  - Governance
+  - None
 - Removed sections:
-  - None (initial population)
+  - None
 - Templates requiring updates:
   - ✅ reviewed: .specify/templates/plan-template.md (Constitution Check
     gate present; no changes needed — gate is dynamically filled)
   - ✅ reviewed: .specify/templates/spec-template.md (user-story structure
     compatible; no mandatory section additions required)
   - ✅ reviewed: .specify/templates/tasks-template.md (task categorization
-    generic; FSI/baseline/scripting tasks will be added per-feature by
+    generic; doc skill tasks will be added per-feature by
     /speckit.tasks at generation time)
 - Follow-up TODOs:
   - None
@@ -106,27 +107,51 @@ prototyping, and serves as living documentation that is continuously
 validated.
 
 ### VI. Comprehensive Documentation
-API documentation MUST be generated from `.fsi` signature files using the
-`/doc` skill. The `.fsi` files are the single source of truth for public
-API documentation. XML doc comments (`///`) MUST be authored in the `.fsi`
-file, not the `.fs` implementation file; the compiler emits these comments
-into the assembly's XML documentation output, and documentation tooling
-MUST consume that compiled output to produce developer-facing docs. Any
-workflow that produces API documentation from implementation files or
-hand-maintained documents instead of the `.fsi`-originated XML output is
-non-compliant.
+Documentation MUST be produced using the five specialized documentation
+skills, each targeting a distinct concern:
 
-The `/doc` skill MUST be invoked to generate comprehensive documentation
-whenever public API surface changes. Generated documentation MUST cover:
-- Module-level summaries
-- Type and member signatures with descriptions
-- Usage examples drawn from scripting preludes and example scripts
-- Cross-references between related modules
+1. **`doc-setup`** — Initialize FSharp.Formatting for the project. MUST be
+   run once to install `fsdocs-tool`, create the `docs/` directory, and
+   configure MSBuild properties (`GenerateDocumentationFile`, `RepositoryUrl`,
+   etc.) in `Directory.Build.props`.
+2. **`api-doc`** — Maintain XML doc comments (`///`) in `.fsi` signature
+   files. The `.fsi` files are the single source of truth for public API
+   documentation. XML doc comments MUST be authored in the `.fsi` file, not
+   the `.fs` implementation file. Every public module, type, and function
+   MUST have a `<summary>`. Discriminated union cases, computation expression
+   builders, and active patterns MUST be individually documented. Namespace-
+   level documentation MUST use `<namespacedoc>` sentinel modules.
+3. **`doc-examples`** — Create literate F# scripts (`.fsx`) in `docs/` that
+   teach library usage through executable, narrative-driven examples.
+   Examples MUST be organized by feature or use-case, not by namespace.
+   Scripts MUST be verifiable with `dotnet fsdocs build --eval`.
+4. **`doc-technical`** — Create Markdown files in `docs/` for architecture
+   overviews, design decision records (ADRs), subsystem deep-dives, and
+   migration guides. Technical docs MUST explain the "why" behind design
+   choices.
+5. **`doc-build`** — Build the documentation site and diagnose issues. MUST
+   be used to verify documentation after any content or API change.
 
-Rationale: Centralizing documentation authorship in `.fsi` files and
-automating generation via `/doc` ensures docs stay synchronized with the
-actual API, eliminates documentation drift, and provides a single
-repeatable workflow for documentation updates.
+The compiler emits XML doc comments from `.fsi` files into the assembly's
+XML documentation output, and FSharp.Formatting consumes that compiled
+output to produce API reference pages. Any workflow that produces API
+documentation from implementation files or hand-maintained documents
+instead of the `.fsi`-originated XML output is non-compliant.
+
+Documentation MUST cover:
+- Module-level summaries and namespace documentation (via `api-doc`)
+- Type and member signatures with descriptions (via `api-doc`)
+- Executable usage examples organized by feature (via `doc-examples`)
+- Architecture overviews and design decision records (via `doc-technical`)
+- Cross-references between related modules and documentation pages
+
+Rationale: Splitting documentation into five focused skills ensures each
+concern — API comments, executable examples, technical narrative, site
+setup, and build verification — receives appropriate attention and follows
+its own best practices. Centralizing API doc authorship in `.fsi` files
+eliminates documentation drift. Literate scripts provide continuously
+validated examples. Technical docs capture design rationale that code alone
+cannot convey.
 
 ## Engineering Constraints
 
@@ -157,10 +182,11 @@ repeatable workflow for documentation updates.
   that introduces them.
 - Public API changes MUST document compatibility impact and migration
   guidance.
-- Documentation MUST be generated from `.fsi` signature files using the
-  `/doc` skill. XML doc comments (`///`) MUST be authored in the `.fsi`
-  file. The `/doc` skill MUST be run after any public API surface change
-  to regenerate documentation.
+- Documentation MUST be produced using the five specialized doc skills
+  (`doc-setup`, `api-doc`, `doc-examples`, `doc-technical`, `doc-build`).
+  XML doc comments (`///`) MUST be authored in the `.fsi` file. The
+  `api-doc` skill MUST be used after any public API surface change to
+  update doc comments, and `doc-build` MUST be run to verify the site.
 - Dependencies MUST be minimized; each new dependency requires a stated
   need, version pinning strategy, and maintenance owner.
 - Every dotnet project that produces a library MUST be packable via
@@ -189,8 +215,10 @@ repeatable workflow for documentation updates.
    and scripting prelude/example tasks where applicable.
 5. `/speckit.analyze` SHOULD be used before `/speckit.implement` for
    cross-artifact consistency checks.
-6. `/doc` MUST be invoked after any public API surface change to regenerate
-   comprehensive documentation from `.fsi` files.
+6. After any public API surface change: `api-doc` MUST be used to update
+   XML doc comments in `.fsi` files, `doc-examples` SHOULD update affected
+   literate scripts, `doc-technical` SHOULD update affected architecture
+   or migration docs, and `doc-build` MUST verify the documentation site.
 7. Pull requests MUST include: linked spec/plan/tasks, test evidence, and
    updated `.fsi`/surface-area baselines when public API surface changes.
 8. Multi-language components (HTML/JS dashboards) MUST pass their own
@@ -221,4 +249,4 @@ Compliance review expectations:
   record exceptions explicitly.
 - Periodic audits SHOULD verify templates and agent prompts remain aligned.
 
-**Version**: 1.0.0 | **Ratified**: 2026-03-02 | **Last Amended**: 2026-03-02
+**Version**: 1.1.0 | **Ratified**: 2026-03-02 | **Last Amended**: 2026-03-04
