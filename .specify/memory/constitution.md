@@ -1,18 +1,14 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 → 1.1.0
+- Version change: 1.1.0 → 1.2.0
 - Modified principles:
-  - Principle VI: Comprehensive Documentation — replaced monolithic `/doc`
-    skill with five specialized documentation skills (`doc-setup`,
-    `api-doc`, `doc-examples`, `doc-technical`, `doc-build`). Updated
-    documentation workflow to use skill-per-concern model. Expanded scope
-    beyond API-only docs to include literate examples, technical docs,
-    and site setup/build.
+  - None
 - Modified sections:
-  - Engineering Constraints — updated documentation tooling constraint to
-    reference the five doc skills instead of `/doc`.
-  - Workflow and Quality Gates — updated step 6 to reference the new
-    skill-per-concern documentation workflow.
+  - Engineering Constraints — added README attribution requirement
+    (speckit + Claude Code Opus 4.6 disclaimer) and license file
+    requirement.
+  - Workflow and Quality Gates — added step 9 requiring README
+    attribution and license verification before merge.
 - Added sections:
   - None
 - Removed sections:
@@ -23,7 +19,7 @@ Sync Impact Report
   - ✅ reviewed: .specify/templates/spec-template.md (user-story structure
     compatible; no mandatory section additions required)
   - ✅ reviewed: .specify/templates/tasks-template.md (task categorization
-    generic; doc skill tasks will be added per-feature by
+    generic; README/license tasks will be added per-feature by
     /speckit.tasks at generation time)
 - Follow-up TODOs:
   - None
@@ -202,6 +198,21 @@ cannot convey.
   prelude MUST load the compiled library via `#r` directives referencing
   the packed or built output. Example scripts MUST be validated as part of
   the CI pipeline or manual pre-merge checklist.
+- Every project governed by this constitution MUST include a `README.md`
+  file. The README MUST contain an attribution disclaimer as the first
+  content after the H1 heading, in italicized format:
+  `*Created using [speckit](https://github.com/github/spec-kit) with
+  Claude Code (Opus 4.6). See the [project constitution](<path-to-constitution>)
+  and [documentation skills](<path-to-constitution>#vi-comprehensive-documentation).*`
+  The `<path-to-constitution>` MUST resolve to the project's own
+  `.specify/memory/constitution.md`. The attribution MUST include working
+  links to the speckit repository, the project constitution, and the
+  documentation skills section (Principle VI).
+- Every project governed by this constitution MUST include a license file
+  (`LICENSE` or `LICENSE.md`) in the repository root. The license type
+  MUST be specified by the project maintainer. The README MUST reference
+  the license file (e.g., "See [LICENSE](LICENSE) for details."). Projects
+  MUST NOT be published or deployed without a license file in place.
 
 ## Workflow and Quality Gates
 
@@ -223,6 +234,9 @@ cannot convey.
    updated `.fsi`/surface-area baselines when public API surface changes.
 8. Multi-language components (HTML/JS dashboards) MUST pass their own
    linting and test gates before merge.
+9. Every project MUST verify that `README.md` contains the speckit
+   attribution disclaimer and that a license file exists in the repository
+   root before the initial public release or first PR merge.
 
 ## Governance
 
@@ -249,4 +263,4 @@ Compliance review expectations:
   record exceptions explicitly.
 - Periodic audits SHOULD verify templates and agent prompts remain aligned.
 
-**Version**: 1.1.0 | **Ratified**: 2026-03-02 | **Last Amended**: 2026-03-04
+**Version**: 1.2.0 | **Ratified**: 2026-03-02 | **Last Amended**: 2026-03-06
