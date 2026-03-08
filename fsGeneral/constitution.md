@@ -76,22 +76,21 @@ prototyping, and serves as living documentation that is continuously
 validated.
 
 ### VI. Comprehensive Documentation
-Documentation MUST be produced using the five specialized documentation
-skills, each targeting a distinct concern:
-
-1. **`fsdocs-setup`** — Initialize FSharp.Formatting for the project.
-2. **`fsdocs-api-doc`** — Maintain XML doc comments (`///`) in `.fsi` signature files.
-3. **`fsdocs-examples`** — Create literate F# scripts (`.fsx`) in `docs/`.
-4. **`fsdocs-technical`** — Create Markdown files in `docs/` for architecture
-   overviews, design decision records, and migration guides.
-5. **`fsdocs-build`** — Build the documentation site and diagnose issues.
+Documentation MUST be produced using the `fsdoc` agent (FSDOC_AGENT), which
+autonomously handles the full documentation lifecycle for F# projects using
+FSharp.Formatting. A single invocation of `fsdoc` discovers the project
+structure, sets up FSharp.Formatting, generates API docs, literate examples,
+technical documents, known-issues pages, and a README, then builds and
+validates the documentation site.
 
 Documentation MUST cover:
-- Module-level summaries and namespace documentation (via `fsdocs-api-doc`)
-- Type and member signatures with descriptions (via `fsdocs-api-doc`)
-- Executable usage examples organized by feature (via `fsdocs-examples`)
-- Architecture overviews and design decision records (via `fsdocs-technical`)
+- Module-level summaries and namespace documentation (XML doc comments)
+- Type and member signatures with descriptions
+- Executable usage examples as literate `.fsx` scripts organized by feature
+- Architecture overviews and design decision records as literate scripts
+- Known bugs and shortcomings documented from source annotations
 - Cross-references between related modules and documentation pages
+- Link validation and reachability from README as the documentation root
 
 ### VII. Inter-Project Communication
 Projects governed by this constitution are purely F# on .NET. Other
@@ -144,9 +143,8 @@ project, and makes inter-project contracts explicit and testable.
 4. Tasks MUST produce story-grouped tasks including verification and `.fsi` tasks.
 5. Analyze SHOULD be used before implementation for consistency checks.
 6. Implement — execute tasks phase-by-phase.
-7. After implementation completes, run documentation updates using
-   `fsdocs-api-doc`, `fsdocs-examples`, `fsdocs-technical`, and `fsdocs-build`
-   as applicable for any public API or behavioral changes.
+7. After implementation completes, run the `fsdoc` agent for any public API
+   or behavioral changes to update documentation across all concerns.
 8. Pull requests MUST include: linked spec/plan/tasks, test evidence, and
    updated `.fsi`/surface-area baselines when public API surface changes.
 
@@ -165,4 +163,4 @@ Versioning policy:
 - MINOR for new principle/section additions or expanded obligations.
 - PATCH for clarifications and wording refinements.
 
-**Version**: 2.0.0
+**Version**: 2.1.0
