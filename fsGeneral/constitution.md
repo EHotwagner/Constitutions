@@ -93,9 +93,34 @@ Documentation MUST cover:
 - Architecture overviews and design decision records (via `fsdocs-technical`)
 - Cross-references between related modules and documentation pages
 
+### VII. Inter-Project Communication
+Projects governed by this constitution are purely F# on .NET. Other
+languages MUST live in their own separate spec-kit projects. Communication
+between projects MUST follow well-defined, contract-first protocols:
+
+1. **Real-time communication** — MUST use gRPC. Service definitions MUST
+   be implemented using the `fsgrpc-*` agent skills (`fsgrpc-setup`,
+   `fsgrpc-proto`, `fsgrpc-server`, `fsgrpc-client`, `fsgrpc-codefirst`).
+   Proto files or code-first contracts define the canonical interface.
+2. **Non-real-time communication** — MUST use OpenAPI. An OpenAPI
+   specification MUST be authored and versioned alongside the service.
+   F# server implementations MUST generate or validate against the OpenAPI
+   spec. Consumers MUST use generated clients derived from the spec.
+
+Cross-project contracts (`.proto` files, OpenAPI specs) MUST be versioned,
+reviewed, and treated as first-class artifacts subject to the same spec-first
+workflow as code changes. Breaking changes to inter-project contracts MUST
+include migration guidance and coordinated rollout plans.
+
+Rationale: Strict language separation with protocol-based boundaries
+enforces clean architecture, eliminates polyglot complexity within a single
+project, and makes inter-project contracts explicit and testable.
+
 ## Engineering Constraints
 
-- Primary Stack: F# on .NET is the default and required baseline.
+- **F# on .NET is the exclusive stack.** No other languages are permitted
+  within projects governed by this constitution. Multi-language needs MUST
+  be addressed by separate projects communicating via gRPC or OpenAPI.
 - Every public `.fs` module MUST have a curated `.fsi` signature file.
 - Surface-area baseline files MUST exist for each public module.
 - Public API changes MUST document compatibility impact and migration guidance.
@@ -104,6 +129,12 @@ Documentation MUST cover:
 - Every dotnet project that produces a library MUST be packable via
   `dotnet pack`. The resulting `.nupkg` MUST be output to the local NuGet
   store (`~/.local/share/nuget-local/`).
+- gRPC services MUST be set up using the `fsgrpc-setup` skill and
+  implemented with `fsgrpc-server`/`fsgrpc-client`. Proto definitions
+  MUST use `fsgrpc-proto` or `fsgrpc-codefirst` as appropriate.
+- OpenAPI specs MUST be stored in the repository and validated in CI.
+  Server endpoints MUST conform to the spec; clients MUST be generated
+  from the spec.
 
 ## Workflow and Quality Gates
 
@@ -134,4 +165,4 @@ Versioning policy:
 - MINOR for new principle/section additions or expanded obligations.
 - PATCH for clarifications and wording refinements.
 
-**Version**: 1.0.0
+**Version**: 2.0.0
