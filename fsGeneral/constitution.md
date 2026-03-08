@@ -79,18 +79,18 @@ validated.
 Documentation MUST be produced using the five specialized documentation
 skills, each targeting a distinct concern:
 
-1. **`doc-setup`** — Initialize FSharp.Formatting for the project.
-2. **`api-doc`** — Maintain XML doc comments (`///`) in `.fsi` signature files.
-3. **`doc-examples`** — Create literate F# scripts (`.fsx`) in `docs/`.
-4. **`doc-technical`** — Create Markdown files in `docs/` for architecture
+1. **`fsdocs-setup`** — Initialize FSharp.Formatting for the project.
+2. **`fsdocs-api-doc`** — Maintain XML doc comments (`///`) in `.fsi` signature files.
+3. **`fsdocs-examples`** — Create literate F# scripts (`.fsx`) in `docs/`.
+4. **`fsdocs-technical`** — Create Markdown files in `docs/` for architecture
    overviews, design decision records, and migration guides.
-5. **`doc-build`** — Build the documentation site and diagnose issues.
+5. **`fsdocs-build`** — Build the documentation site and diagnose issues.
 
 Documentation MUST cover:
-- Module-level summaries and namespace documentation (via `api-doc`)
-- Type and member signatures with descriptions (via `api-doc`)
-- Executable usage examples organized by feature (via `doc-examples`)
-- Architecture overviews and design decision records (via `doc-technical`)
+- Module-level summaries and namespace documentation (via `fsdocs-api-doc`)
+- Type and member signatures with descriptions (via `fsdocs-api-doc`)
+- Executable usage examples organized by feature (via `fsdocs-examples`)
+- Architecture overviews and design decision records (via `fsdocs-technical`)
 - Cross-references between related modules and documentation pages
 
 ## Engineering Constraints
@@ -112,8 +112,11 @@ Documentation MUST cover:
 3. Plan MUST define `.fsi` signature contracts for new or changed public modules.
 4. Tasks MUST produce story-grouped tasks including verification and `.fsi` tasks.
 5. Analyze SHOULD be used before implementation for consistency checks.
-6. After any public API surface change: update docs accordingly.
-7. Pull requests MUST include: linked spec/plan/tasks, test evidence, and
+6. Implement — execute tasks phase-by-phase.
+7. After implementation completes, run documentation updates using
+   `fsdocs-api-doc`, `fsdocs-examples`, `fsdocs-technical`, and `fsdocs-build`
+   as applicable for any public API or behavioral changes.
+8. Pull requests MUST include: linked spec/plan/tasks, test evidence, and
    updated `.fsi`/surface-area baselines when public API surface changes.
 
 ## Governance
