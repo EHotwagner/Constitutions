@@ -172,6 +172,8 @@ project, and makes inter-project contracts explicit and testable.
 
 ## Workflow and Quality Gates
 
+### Tier 1 — Full Pipeline
+
 1. Specify — produce the feature spec with testable user stories.
 2. Plan — MUST pass Constitution Check gates before implementation begins.
 3. Plan MUST define `.fsi` signature contracts for new or changed public modules.
@@ -182,6 +184,21 @@ project, and makes inter-project contracts explicit and testable.
    or behavioral changes to update documentation across all concerns.
 8. Pull requests MUST include: linked spec/plan/tasks, test evidence, and
    updated `.fsi`/surface-area baselines when public API surface changes.
+
+### Tier 2 — Lightweight Path
+
+When a change is classified as Tier 2 (see Section I), the spec-kit artifact
+chain is skipped. The workflow is:
+
+1. Implement — fix or refactor directly on a feature branch.
+2. Test — verify existing tests pass; add a new test if the change warrants one.
+3. Commit — message MUST explain the *why*, not just the *what*.
+4. Pull request — MUST state "Tier 2" and include a one-line justification
+   for why the change qualifies (e.g. "internal bug fix, no public API
+   impact"). No linked spec/plan/tasks required.
+
+When the user marks a change as Tier 2 in their prompt, skip spec, plan, and
+task creation. Implement the fix directly, ensure tests pass, and commit.
 
 ## Governance
 
@@ -198,4 +215,4 @@ Versioning policy:
 - MINOR for new principle/section additions or expanded obligations.
 - PATCH for clarifications and wording refinements.
 
-**Version**: 2.2.0
+**Version**: 2.2.1
