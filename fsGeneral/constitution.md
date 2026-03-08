@@ -9,8 +9,36 @@ from requirement to task to code. Implementation-only changes without
 documented user value, acceptance criteria, and scope boundaries are
 non-compliant.
 
+Changes are classified into two tiers based on scope and risk:
+
+**Tier 1 — Full compliance.** Required when a change meets any of:
+- Adds, removes, or modifies public API surface (types, functions, signatures)
+- Introduces new dependencies
+- Changes inter-project contracts (`.proto`, OpenAPI specs)
+- Alters observable behavior covered by existing specs
+
+Tier 1 changes require the full artifact chain: spec, plan, `.fsi` updates,
+surface-area baselines, test evidence, and documentation.
+
+**Tier 2 — Lightweight compliance.** Applies to changes that are entirely
+internal and carry low risk of regression:
+- Bug fixes in private/internal code with no public API impact
+- Internal refactors that preserve all existing tests
+- Dependency version bumps (patch/minor) with no API change
+- Documentation-only changes, typo fixes, comment updates
+
+Tier 2 changes MUST still include test evidence (existing tests pass, new
+test if the bug fix warrants one) and a commit message that explains the
+*why*. They do NOT require a feature spec, implementation plan, or `.fsi`
+/ surface-area baseline updates.
+
+When in doubt, a change is Tier 1. The tier classification SHOULD be stated
+in the PR description.
+
 Rationale: Spec-first execution reduces rework, keeps scope explicit, and
-ensures decisions are reviewable.
+ensures decisions are reviewable. Tiered compliance preserves rigor for
+high-impact changes while avoiding disproportionate ceremony for low-risk
+work.
 
 ### II. Compiler-Enforced Structural Contracts
 Every public F# module MUST have a corresponding `.fsi` signature file that
@@ -92,6 +120,13 @@ Documentation MUST cover:
 - Cross-references between related modules and documentation pages
 - Link validation and reachability from README as the documentation root
 
+Rationale: A single autonomous documentation agent ensures comprehensive,
+consistent output across all documentation concerns in one pass. Consolidating
+setup, API docs, examples, technical writing, and site validation into one
+invocation eliminates partial documentation updates where some concerns are
+skipped, and makes documentation a repeatable, auditable step rather than a
+collection of manual tasks.
+
 ### VII. Inter-Project Communication
 Projects governed by this constitution are purely F# on .NET. Other
 languages MUST live in their own separate spec-kit projects. Communication
@@ -163,4 +198,4 @@ Versioning policy:
 - MINOR for new principle/section additions or expanded obligations.
 - PATCH for clarifications and wording refinements.
 
-**Version**: 2.1.0
+**Version**: 2.2.0
