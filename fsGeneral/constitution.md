@@ -11,7 +11,7 @@ non-compliant.
 
 Changes are classified into two tiers based on scope and risk:
 
-**Tier 1 — Full compliance.** Required when a change meets any of:
+Required when a change meets any of:
 - Adds, removes, or modifies public API surface (types, functions, signatures)
 - Introduces new dependencies
 - Changes inter-project contracts (`.proto`, OpenAPI specs)
@@ -19,26 +19,6 @@ Changes are classified into two tiers based on scope and risk:
 
 Tier 1 changes require the full artifact chain: spec, plan, `.fsi` updates,
 surface-area baselines, test evidence, and documentation.
-
-**Tier 2 — Lightweight compliance.** Applies to changes that are entirely
-internal and carry low risk of regression:
-- Bug fixes in private/internal code with no public API impact
-- Internal refactors that preserve all existing tests
-- Dependency version bumps (patch/minor) with no API change
-- Documentation-only changes, typo fixes, comment updates
-
-Tier 2 changes MUST still include test evidence (existing tests pass, new
-test if the bug fix warrants one) and a commit message that explains the
-*why*. They do NOT require a feature spec, implementation plan, or `.fsi`
-/ surface-area baseline updates.
-
-When in doubt, a change is Tier 1. The tier classification SHOULD be stated
-in the PR description.
-
-Rationale: Spec-first execution reduces rework, keeps scope explicit, and
-ensures decisions are reviewable. Tiered compliance preserves rigor for
-high-impact changes while avoiding disproportionate ceremony for low-risk
-work.
 
 ### II. Compiler-Enforced Structural Contracts
 Every public F# module MUST have a corresponding `.fsi` signature file that
@@ -103,29 +83,6 @@ accessibility lowers the barrier to experimentation, enables rapid
 prototyping, and serves as living documentation that is continuously
 validated.
 
-### VI. Comprehensive Documentation
-Documentation MUST be produced using the `fsdoc` agent (FSDOC_AGENT), which
-autonomously handles the full documentation lifecycle for F# projects using
-FSharp.Formatting. A single invocation of `fsdoc` discovers the project
-structure, sets up FSharp.Formatting, generates API docs, literate examples,
-technical documents, known-issues pages, and a README, then builds and
-validates the documentation site.
-
-Documentation MUST cover:
-- Module-level summaries and namespace documentation (XML doc comments)
-- Type and member signatures with descriptions
-- Executable usage examples as literate `.fsx` scripts organized by feature
-- Architecture overviews and design decision records as literate scripts
-- Known bugs and shortcomings documented from source annotations
-- Cross-references between related modules and documentation pages
-- Link validation and reachability from README as the documentation root
-
-Rationale: A single autonomous documentation agent ensures comprehensive,
-consistent output across all documentation concerns in one pass. Consolidating
-setup, API docs, examples, technical writing, and site validation into one
-invocation eliminates partial documentation updates where some concerns are
-skipped, and makes documentation a repeatable, auditable step rather than a
-collection of manual tasks.
 
 ### VII. Inter-Project Communication
 Projects governed by this constitution are purely F# on .NET. Other
@@ -172,8 +129,6 @@ project, and makes inter-project contracts explicit and testable.
 
 ## Workflow and Quality Gates
 
-### Tier 1 — Full Pipeline
-
 1. Specify — produce the feature spec with testable user stories.
 2. Plan — MUST pass Constitution Check gates before implementation begins.
 3. Plan MUST define `.fsi` signature contracts for new or changed public modules.
@@ -184,21 +139,6 @@ project, and makes inter-project contracts explicit and testable.
    or behavioral changes to update documentation across all concerns.
 8. Pull requests MUST include: linked spec/plan/tasks, test evidence, and
    updated `.fsi`/surface-area baselines when public API surface changes.
-
-### Tier 2 — Lightweight Path
-
-When a change is classified as Tier 2 (see Section I), the spec-kit artifact
-chain is skipped. The workflow is:
-
-1. Implement — fix or refactor directly on a feature branch.
-2. Test — verify existing tests pass; add a new test if the change warrants one.
-3. Commit — message MUST explain the *why*, not just the *what*.
-4. Pull request — MUST state "Tier 2" and include a one-line justification
-   for why the change qualifies (e.g. "internal bug fix, no public API
-   impact"). No linked spec/plan/tasks required.
-
-When the user marks a change as Tier 2 in their prompt, skip spec, plan, and
-task creation. Implement the fix directly, ensure tests pass, and commit.
 
 ## Governance
 
