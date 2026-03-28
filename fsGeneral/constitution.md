@@ -83,30 +83,6 @@ accessibility lowers the barrier to experimentation, enables rapid
 prototyping, and serves as living documentation that is continuously
 validated.
 
-
-### VII. Inter-Project Communication
-Projects governed by this constitution are purely F# on .NET. Other
-languages MUST live in their own separate spec-kit projects. Communication
-between projects MUST follow well-defined, contract-first protocols:
-
-1. **Real-time communication** — MUST use gRPC. Service definitions MUST
-   be implemented using the `fsgrpc-*` agent skills (`fsgrpc-setup`,
-   `fsgrpc-proto`, `fsgrpc-server`, `fsgrpc-client`, `fsgrpc-codefirst`).
-   Proto files or code-first contracts define the canonical interface.
-2. **Non-real-time communication** — MUST use OpenAPI. An OpenAPI
-   specification MUST be authored and versioned alongside the service.
-   F# server implementations MUST generate or validate against the OpenAPI
-   spec. Consumers MUST use generated clients derived from the spec.
-
-Cross-project contracts (`.proto` files, OpenAPI specs) MUST be versioned,
-reviewed, and treated as first-class artifacts subject to the same spec-first
-workflow as code changes. Breaking changes to inter-project contracts MUST
-include migration guidance and coordinated rollout plans.
-
-Rationale: Strict language separation with protocol-based boundaries
-enforces clean architecture, eliminates polyglot complexity within a single
-project, and makes inter-project contracts explicit and testable.
-
 ## Engineering Constraints
 
 - **F# on .NET is the exclusive stack.** No other languages are permitted
