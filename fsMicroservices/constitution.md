@@ -78,6 +78,11 @@ fix/feature and pass after implementation. Each user story MUST define
 independent verification criteria and corresponding test coverage.
 Unverified behavior changes MUST NOT be merged.
 
+Tests that cannot pass due to out-of-scope issues 
+(e.g., missing server, external dependency unavailable, unimplemented upstream feature) 
+MUST be marked as skipped or have their assertions relaxed. 
+Never mark a failing test as passed.
+
 Prefer real databases and real service instances over mocks. Use Aspire's
 `DistributedApplicationTestingBuilder` for cross-service integration tests.
 Unit tests supplement but do not replace integration tests. Contract tests
