@@ -56,6 +56,12 @@ define independent verification criteria and corresponding test coverage
 (unit, integration, or contract, as applicable). Unverified behavior
 changes MUST NOT be merged.
 
+Always run tests against the live environment. Do not use mocks, fakes, or in-memory substitutes.
+
+Tests that cannot pass due to out-of-scope issues (e.g., missing server, external dependency unavailable, 
+unimplemented upstream feature) MUST be marked as skipped or have their assertions relaxed. 
+Never mark a failing test as passed.
+
 Rationale: Mandatory test evidence prevents regressions and keeps delivery
 confidence high across incremental feature work.
 
