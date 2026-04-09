@@ -25,7 +25,8 @@ Every public F# module MUST have a corresponding `.fsi` signature file that
 declares its public API surface. The `.fsi` file serves as a structural
 contract: the compiler MUST verify that the implementation (`.fs`) conforms
 to its signature before the build succeeds. Any symbol omitted from the
-`.fsi` file becomes module-private by design.
+`.fsi` file becomes module-private by design. Do not add private specifiers in '.fs' 
+files. 
 
 Surface area baselines MUST be maintained for public API modules. A
 serialized snapshot of the public API surface MUST be stored as a baseline
